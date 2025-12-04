@@ -1,23 +1,24 @@
-import { useState } from "react";
-import Modal from "./Modal";
+import { useState, useEffect } from "react";
 
 export default function App() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [clicks, setClicks] = useState(() => {
+    const savedClicks = localStorage.getItem("saved-clicks");
+    if (savedClicks !== null) {
+      return JSON.parse(savedClicks);
+    }
+    return 0;
+  });
 
-  const openModal = () => setIsModalOpen(true);
-
-  const closeModal = () => setIsModalOpen(false);
+  useEffect(() => {
+    localStorage.setItem("saved-clicks", JSON.stringify(clicks));
+  }, [clicks]);
 
   return (
     <div>
-      <h1>Main content of the page</h1>
-      <button onClick={openModal}>Open modal</button>
-      {isModalOpen && (
-        <Modal onClose={closeModal}>
-          <h2>Modal Title</h2>
-          <p>This is some content inside the modal.</p>
-        </Modal>
-      )}
+      <button onClick={() => setClicks(clicks + 1)}>
+        You clicked {clicks} times
+      </button>
+      <button onClick={() => setClicks(0)}>Reset</button>
     </div>
   );
 }
