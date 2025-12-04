@@ -1,28 +1,23 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useState } from "react";
+import Modal from "./Modal";
 
 export default function App() {
-  const [count, setCount] = useState(1);
-  const [person, setPerson] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(() => {
-    // 1. Оголошуємо асинхронну функцію
-    async function fetchCharacter() {
-      const response = await axios.get(
-        `https://swapi.info/api/people/${count}`
-      );
-      setPerson(response.data);
-    }
+  const openModal = () => setIsModalOpen(true);
 
-    // 2. Викликаємо її одразу після оголошення
-    fetchCharacter();
-  }, [count]);
+  const closeModal = () => setIsModalOpen(false);
 
   return (
-    <>
-      <h2>The count is {count}</h2>
-      <button onClick={() => setCount(count + 1)}>Get next character</button>
-      <pre>{JSON.stringify(person, null, 2)}</pre>
-    </>
+    <div>
+      <h1>Main content of the page</h1>
+      <button onClick={openModal}>Open modal</button>
+      {isModalOpen && (
+        <Modal onClose={closeModal}>
+          <h2>Modal Title</h2>
+          <p>This is some content inside the modal.</p>
+        </Modal>
+      )}
+    </div>
   );
 }
