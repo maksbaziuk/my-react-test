@@ -1,33 +1,28 @@
-import { useState } from "react";
-import SearchForm from "./SearchForm";
-import type { Article } from "../types/article";
-import ArticleList from "./ArticleList";
-import { fetchArticles } from "../services/articleService";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function App() {
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
+  const [count, setCount] = useState(1);
+  const [person, setPerson] = useState(null);
 
-  const handleSearch = async (topic: string) => {
-    try {
-      setIsLoading(true);
-      setIsError(false);
-      const data = await fetchArticles(topic);
-      setArticles(data);
-    } catch {
-      setIsError(true);
-    } finally {
-      setIsLoading(false);
+  useEffect(() => {
+    // 1. Оголошуємо асинхронну функцію
+    async function fetchCharacter() {
+      const response = await axios.get(
+        `https://swapi.info/api/people/${count}`
+      );
+      setPerson(response.data);
     }
-  };
+
+    // 2. Викликаємо її одразу після оголошення
+    fetchCharacter();
+  }, [count]);
 
   return (
-    <div>
-      <SearchForm onSubmit={handleSearch} />
-      {isLoading && <p>Loading data, please wait...</p>}
-      {isError && <p>Whoops, something went wrong! Please try again!</p>}
-      {articles.length > 0 && <ArticleList items={articles} />}
-    </div>
+    <>
+      <h2>The count is {count}</h2>
+      <button onClick={() => setCount(count + 1)}>Get next character</button>
+      <pre>{JSON.stringify(person, null, 2)}</pre>
+    </>
   );
 }
