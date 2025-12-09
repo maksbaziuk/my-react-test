@@ -6,10 +6,7 @@ interface ArticlesHttpResponse {
   nbPages: number;
 }
 
-export const fetchArticles = async (
-  topic: string,
-  page: number
-): Promise<ArticlesHttpResponse> => {
+export const fetchArticles = async (topic: string, page: number) => {
   const response = await axios.get<ArticlesHttpResponse>(
     "https://hn.algolia.com/api/v1/search",
     {
