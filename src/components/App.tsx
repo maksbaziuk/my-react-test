@@ -1,19 +1,22 @@
-import { useState } from "react";
-import SearchBox from "./SearchBox";
-import SortFilter from "./SortFilter";
-import type { SortOption } from "./types";
+import { useState, useEffect } from "react";
+import { useDebouncedCallback } from "use-debounce";
 
 export default function App() {
-  const [searchText, setSearchText] = useState("");
-  const [sortBy, setSortBy] = useState<SortOption>("created");
+  const [text, setText] = useState("hello");
+
+  const handleChange = useDebouncedCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => setText(event.target.value),
+    1000
+  );
+
+  useEffect(() => {
+    console.log(`Make HTTP request with: ${text}`);
+  }, [text]);
 
   return (
     <>
-      <SearchBox value={searchText} onSearch={setSearchText} />
-      <p>Searching for: {searchText}</p>
-
-      <SortFilter value={sortBy} onSelect={setSortBy} />
-      <p>Sorting by: {sortBy}</p>
+      <input type="text" defaultValue={text} onChange={handleChange} />
+      <p>Text value: {text}</p>
     </>
   );
 }
